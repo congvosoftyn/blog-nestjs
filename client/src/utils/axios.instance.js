@@ -1,14 +1,18 @@
-// https://dev.to/nilanth/how-to-use-axios-in-an-optimized-and-scalable-way-with-react-518n
-//https://youtu.be/0aPLk2e2Z3g
+/**
+ * https://dev.to/nilanth/how-to-use-axios-in-an-optimized-and-scalable-way-with-react-518n
+ * https://youtu.be/0aPLk2e2Z3g
+ * https://medium.com/nerd-for-tech/how-to-dockerize-a-nestjs-project-e80774d2459b
+ */
+
 import axios from 'axios';
 
-const BASE_API = 'http://localhost:3000'
+const BASE_API = 'http://localhost:4001'
 
 const AxiosInstance = axios.create({
     baseURL: BASE_API,
     headers: {
-        'Content-Type': 'application/json',
-        // "Authorization": `Bearer ${localStorage.getItem('token')}`
+        'Access-Control-Allow-Origin': '*',
+        "Content-Type": "application/json"
     },
     timeout: 5000,
     withCredentials: true

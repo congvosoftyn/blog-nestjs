@@ -5,6 +5,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { PostsModule } from './posts/posts.module';
+import { FilesModule } from './files/files.module';
 
 @Module({
   imports: [
@@ -19,7 +20,8 @@ import { PostsModule } from './posts/posts.module';
       synchronize: true
     }),
     UsersModule,
-    PostsModule
+    PostsModule,
+    FilesModule
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,26 +1,42 @@
-import { Injectable } from '@nestjs/common';
-import { CreatePostDto } from './dto/create-post.dto';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { UpdatePostDto } from './dto/update-post.dto';
+import { PostEntity } from './post.entity';
 
 @Injectable()
 export class PostsService {
-  create(createPostDto: CreatePostDto) {
-    return 'This action adds a new post';
+  create(body: PostEntity) {
+    return PostEntity.save(body);
   }
 
-  findAll() {
-    return `This action returns all posts`;
+  findAll(cat?: string) {
+    return PostEntity.createQueryBuilder('post')
+      .leftJoinAndSelect('post.user', 'user')
+      .where('post.cat like :search', { search: `%${cat}%` })
+      .getMany();
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} post`;
+    const post = PostEntity.createQueryBuilder('post')
+      .leftJoinAndSelect('post.user', 'user')
+      .where('post.id = :id', { id })
+      .getOne();
+
+    if (!post) throw new NotFoundException('Post Not found!');
+    return post;
   }
 
-  update(id: number, updatePostDto: UpdatePostDto) {
-    return `This action updates a #${id} post`;
+  update(id: number, updatePostDto: UpdatePostDto, userId: number) {
+    this.findOne(id);
+    return PostEntity.createQueryBuilder()
+      .update(updatePostDto)
+      .where('id = :id and userId = :userId', { id, userId })
+      .execute();
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} post`;
+  remove(id: number, userId: number) {
+    return PostEntity.createQueryBuilder()
+      .delete()
+      .where('id = :id and userId = :userId', { id, userId })
+      .execute();
   }
 }

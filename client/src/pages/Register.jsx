@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { AxiosInstance } from '../utils/axios.instance';
 
 export function Register() {
@@ -8,21 +8,24 @@ export function Register() {
     email: "",
     password: ""
   });
-
   const [error, setError] = useState(null)
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log({ inputs })
     try {
-      const { data } = await AxiosInstance({
+      await AxiosInstance({
         method: "POST",
         url: "/users/register",
+        headers: {
+          'Content-Type': 'application/json',
+        },
         data: JSON.stringify(inputs)
       })
 
-      console.log({ data })
+      navigate("/login")
     } catch (error) {
+      console.log({ error })
       setError(error.response.data.message)
     }
   }
@@ -38,7 +41,7 @@ export function Register() {
         <input type="text" placeholder="Enter your username" name='username' required onChange={handleChange} />
         <input type="email" placeholder="Enter your email" name='email' required onChange={handleChange} />
         <input type="password" placeholder="Enter your password" name='password' required onChange={handleChange} />
-        <button type="submit">Login</button>
+        <button type="submit">Submit</button>
         {error && <p>{error}</p>}
         <span>Don't you have an account? <Link to="/login" >Login</Link> </span>
       </form>
